@@ -1,135 +1,113 @@
 import java.util.Scanner;
-import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Launcher{
- static	final String adminName = "navaneeth";
- static	final String adminPass = "password";
- static	final String userName  = "ajay";
- static	final String userPass  = "abcdef";
+
+	static final String USERNAME_ADMIN = "navaneeth";
+	static final String PASSWORD_ADMIN = "abcdef";
+	static final String NAME_ADMIN	   = "Navaneeth Gopal";
+	static final String USERNAME_NOTADMIN = "ajay";
+	static final String PASSWORD_NOTADMIN = "1234";
+	static final String NAME_NOTADMIN	  = "Ajay Narayanan";
+	static 	User currentUser = null;
+	static 	Library lib = null;
+	static	Book book = null;
+
+	 static Scanner sc = new Scanner(System.in); 
+	
+	public static void main(String[] args){
+ 
+		System.out.println("Welcome to the library! ");
+		System.out.println("Please enter your credentials: ");
+			
+			System.out.println("username : ");
+				String username_in = sc.nextLine();
+			System.out.println("password : "); 
+			    String userpass_in = sc.nextLine();
+					
+					login(username_in, userpass_in);
+
+			   /* while(currentUser == null){
+			  //  	login();
+			    //}
+
+			   / while(!displayMenu()) Ajay code. */ 
+		  
 
 
-	public static void main(String[] args) {
-		System.out.println("Welcome to The Library");
-		System.out.println("Please enter your credentials:");
-		System.out.println("Username: ");
-		Scanner sc = new Scanner(System.in);
-		String name = sc.nextLine();
-		System.out.println("Password: ");
-        String pass = sc.nextLine();
-        
-        User currentUser = login(name, pass);
-		if(currentUser.getIsAdmin() == true){
-			displayAdminMenu(currentUser);
-		}
-		else{
-			displayUserMenu(currentUser);
-		}
-       
-	    
 	}
 
-	static User login(String name, String pass) {
-			if(name.equals(adminName) && pass.equals(adminPass)) {
-			System.out.println(" Hello Administrator "+ name);
-			return new User(name, pass, true);
-		}
-		else if(name.equals(userName) && pass.equals(userPass)) {
-			System.out.println(" Hello user "+ name);
-			return new User(name, pass, false);
-		}
-		else {
-			System.out.println("Invalid credentials ");
-			return null;
-		}
-	}
-    
-    
-   
-   static void displayAdminMenu(User currentUser) {
+static void login(String username_in, String userpass_in){
+			    if(username_in.equals(USERNAME_ADMIN) && userpass_in.equals(PASSWORD_ADMIN)){
+
+			    	System.out.println("Welcome administrator "+NAME_ADMIN);
+			    	currentUser = new User(username_in, userpass_in, true );
+			    	displayMenu(true);
+
+			    }else if(username_in.equals(USERNAME_NOTADMIN) && userpass_in.equals(PASSWORD_NOTADMIN)){
+
+			    	System.out.println("Welcome "+NAME_NOTADMIN);
+			    	currentUser = new User(username_in, userpass_in, false );
+			    	displayMenu(false);
+			    }else{
+			    	System.out.println("Invalid credentials ");
+			    }
+			}
+
+	static void displayMenu(boolean trueorfalse){
 		int choice = 0;
 		
- 	    Scanner sc = new Scanner(System.in);
-		
-		System.out.println(" 1. Add Book ");
-		System.out.println(" 2. Remove Book ");
-		System.out.println(" 3. View Books ");
-		System.out.println(" 4. Exit ");
-		System.out.println("Enter the choice: ");
-		choice = sc.nextInt();
-		sc.nextLine();
+		if(trueorfalse == true){
+			System.out.println("Menu:\n1.Add Book\n2.Remove Book\n3.View Book\nPlease enter your choice(1/2/3)");
+			choice = sc.nextInt();
+			sc.nextLine();
+				if(choice == 1){
+					System.out.println("Enter the name of the book: ");
+							String bname = sc.nextLine();
+					System.out.println("Enter the Author name:");
+						String authname = sc.nextLine();
+					System.out.println("Enter the ISBN:");
+						String bisbn  = sc.nextLine();
+					System.out.println("Enter the number of copies:");
+						int bcopies = sc.nextInt();
+						sc.nextLine();
+					System.out.println("Press a y/n to confirm/cancel: ");
+						String yesorno = sc.nextLine();
+						
+						if(yesorno.equals("y") || yesorno.equals("Y")){
+							System.out.println("bname = "+bname);
+							book = new Book(bname, bisbn, authname);
+							//book.displayBook();//temp testcode
+							lib  = new Library();
+							lib.addBook(book, bcopies);
+							System.out.println(bcopies+" book(s) of ISBN: "+bisbn+" added to the library!\n");
+							displayMenu(true);
 
-		if(choice == 1){
-			System.out.println("Enter the book name: ");
-			String bookName = sc.nextLine();
-			System.out.println("Enter the authorName: ");
-			String authorName = sc.nextLine();
-			System.out.println("Enter the ISBN :");
-			String isbn = sc.nextLine();
-			System.out.println("Enter the number of books:");
-			int numbook = sc.nextInt();
-			
-			currentUser.getBookList().add(new Book(isbn, bookName, authorName, numbook));
-			System.out.println("Book Added Successfully! ");
-			displayAdminMenu(currentUser);//code to add book to arraylist goes here
+						}else{
+							System.out.println("Cancelling... ");
+							displayMenu(true);
+						}
+				}else if(choice == 3){
+					System.out.println("Press y/n to confirm ");
+						
+						String yesorno = sc.nextLine();
+						if(yesorno.equals("y") || yesorno.equals("Y")){
+							System.out.println(lib.bookList.toString());	//code to view books from HashMap
+						}else{
+							System.out.println("Exiting...");
+							displayMenu(true);
+						}
 
-         }
-		else if(choice == 2){
-			//code to remove book from arraylist
-		}
-		else if(choice == 3){
-			//code to view books
-			for(int i = 0 ; i < currentUser.getBookList().size(); i++) {
-
-				Book b = currentUser.getBookList().get(i);
-				System.out.println(i+1+".");
-				b.display();
-
-
-			}
-		displayAdminMenu(currentUser);
-		}
-		else if(choice == 4){
-			System.out.println("Exiting...");
-			main(null);
-
-			
-		}
-		else{
-			System.out.println("Invalid choice ");
-			displayAdminMenu(currentUser);
+				}
+			//add method calls in this line
+		}else if(trueorfalse == false){
+			System.out.println("Menu:\n 1.Borrow Book\n2.View Book\nPlease enter your choice(1/2/3) ");
+			choice = sc.nextInt();
+			//add method calls for non admin here
 		}
 
 
-	}
 
-	static void displayUserMenu(User currentUser){
-		int choice = 0;
-		Scanner sc = new Scanner(System.in);
-
-		System.out.println("1. Borrow Book ");
-		System.out.println("2. Return Book ");
-		System.out.println("3. View Books");
-		if(choice == 1)
-		{
-			//code to borrow book
-		}
-		else if(choice == 2){
-			//code to return book
-		}
-		else if(choice == 3){
-			for(int i = 0 ; i < currentUser.getBookList().size(); i++) {
-
-				Book b = currentUser.getBookList().get(i);
-				System.out.println(i+1+".");
-				b.display();
-			}
-			displayUserMenu(currentUser);
-//code to view books
-		}
-		else{
-
-		   System.out.println("Invalid Choice");
-		   displayUserMenu(currentUser);
-		}
 	}
 }
+

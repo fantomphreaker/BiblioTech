@@ -1,33 +1,17 @@
-import java.util.ArrayList;
-
-public class User {
-	private String userName;
+public class User{
+	
+	private String username;
 	private String password;
+	private String name;
 	private boolean isAdmin;
-	private ArrayList<Book> bookList = new ArrayList<Book>();
 
-String getUserName(String username) {
-	return username;
+	User(String uname, String pword, boolean isadmin){
+		username = uname;
+		password = pword;
+		isAdmin  = isadmin;
 
-}
-
-String getUserPass(String userpass) {
-	return userpass;
-}
-
-boolean getIsAdmin() {
-	return isAdmin;
-}	
- 
-ArrayList<Book> getBookList(){
-	return bookList;
-}	
-	User (String name, String pass, boolean isadmin) {
-		userName = name;
-		password = pass;
-		isAdmin	 = isadmin;
 	}
-	
-	
+
+
 
 }
