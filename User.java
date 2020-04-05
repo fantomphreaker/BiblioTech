@@ -5,11 +5,15 @@ public class User{
 	private String name;
 	private boolean isAdmin;
 
-	User(String uname, String pword, boolean isadmin){
-		username = uname;
-		password = pword;
-		isAdmin  = isadmin;
+	User(String uName, String pWord, boolean isAdmin){
+		username = uName;
+		password = pWord;
+		this.isAdmin = isAdmin;
 
+	}
+
+	boolean isAdmin(){
+		return isAdmin;
 	}
 
 

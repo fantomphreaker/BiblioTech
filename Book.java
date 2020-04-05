@@ -1,41 +1,40 @@
-public class Book{
-	
-	private String bookName;
-	private String isbn;
-	private String authorName;
+public class Book {
 
-		Book(String bname, String isBn, String authname){
-			bookName = bname;
-			isbn     = isBn;
-			authorName = authname;
-		}
+    private String bookName;
+    private String isbn;
+    private String authorName;
 
-		String getBookName(){
-			return bookName;
-		}
+    Book(String bName, String ISBN, String authorName) {
+        bookName = bName;
+        isbn = ISBN;
+        this.authorName = authorName;
+    }
 
-		String getAuthorName(){
-			return authorName;
-		}
+    String getBookName() {
+        return bookName;
+    }
 
-		String getISBN(){
-			return isbn;
-		}
+    String getAuthorName() {
+        return authorName;
+    }
 
-		void setBookName(String bname){
-			bookName = bname;
+    String getISBN() {
+        return isbn;
+    }
 
-		}
-		void setAuthorName(String aName){
+    void setBookName(String bName) {
+        bookName = bName;
 
-			authorName = aName;
-		}
-		void setISBN(String iSBN){
+    }
 
-			isbn = iSBN;
-	    }
-	   /* void displayBook(){
-	    	System.out.println(bookName+" -> "+authorName); ---> testcode ajay
-	    } 
-	    */
+    void setAuthorName(String aName) {
+
+        authorName = aName;
+    }
+
+    void setISBN(String ISBN) {
+
+        isbn = ISBN;
+    }
+
 }

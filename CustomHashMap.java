@@ -7,10 +7,10 @@ public String toString(){
 
 	String returnValue = "";
 	for(Book b : keySet()){
-		returnValue += (b.getBookName()+" : "+get(b)+"\n");
+		returnValue += (b.getBookName()+" : "+get(b)+" copies"+"\n");
+         
        }
-    return returnValue;
-
+     return returnValue;
 }
 
 }
