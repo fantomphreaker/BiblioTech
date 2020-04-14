@@ -26,6 +26,10 @@ public class Library{
 	}
 	void addBook(Book book, int bookCopies){
 				bookList.put(book, bookCopies);
+				DBHelper helper = new DBHelper();
+				helper.open();
+				helper.addBook(book);
+				helper.close();
 	}
 
 }
