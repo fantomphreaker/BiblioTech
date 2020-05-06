@@ -1,15 +1,15 @@
+import org.sqlite.core.DB;
+
+import java.sql.SQLOutput;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Launcher{
 
-	static final String USERNAME_ADMIN = "n";
-	static final String PASSWORD_ADMIN = "a";
-	static final String NAME_ADMIN	   = "Navaneeth Gopal";
-	static final String USERNAME_NOTADMIN = "a";
-	static final String PASSWORD_NOTADMIN = "1";
-	static final String NAME_NOTADMIN	  = "Ajay Narayanan";
+
 	static 	User currentUser = null;
-	static 	Library lib = new Library();
+
+	static ArrayList<Book> allBooks = null;
 
 	 static Scanner sc = new Scanner(System.in);
 
@@ -52,18 +52,16 @@ public class Launcher{
 
 	static void login(String inputUsername, String inputPassword) {
 		currentUser = null;
-		if (inputUsername.equals(USERNAME_ADMIN) && inputPassword.equals(PASSWORD_ADMIN)) {
-
-			System.out.println("Welcome administrator " + NAME_ADMIN);
-			currentUser = new User(inputUsername, inputPassword, true);
-
-		} else if (inputUsername.equals(USERNAME_NOTADMIN) && inputPassword.equals(PASSWORD_NOTADMIN)) {
-
-			System.out.println("Welcome " + NAME_NOTADMIN);
-			currentUser = new User(inputUsername, inputPassword, false);
-		} else {
-			System.out.println("Invalid credentials ");
+		DBHelper helper = new DBHelper();
+		helper.open();
+		currentUser = helper.getUserDetails(inputUsername, inputPassword);
+		helper.close();
+		if(currentUser==null){
+			System.out.println("Invalid Credentials! ");
 		}
+
+
+
 	}
 
 	static boolean displayMenu(boolean isAdmin) {
@@ -72,9 +70,9 @@ public class Launcher{
 		if (isAdmin) {
 			System.out.println(
 					"Menu:\n" +
-							"1.Add Book\n" +
-							"2.Remove Book\n" +
-							"3.View Book\n" +
+							"1.Add Book\n" +   //done with sql
+							"2.Remove Book\n" + //do this last
+							"3.View Book\n" +  //done with sql
 							"4.Exit\n" +
 							"Please enter your choice: "
 			);
@@ -90,23 +88,37 @@ public class Launcher{
 				System.out.println("Enter the number of copies:");
 				int bCopies = sc.nextInt();
 				sc.nextLine();
-				System.out.println("Press a y/n to confirm/cancel: ");
-				String userConfirmation = sc.nextLine();
+				if(bCopies < 0){
+					System.out.println("Invalid choice entry. Please try again.\n");
 
-				if (userConfirmation.equals("y") || userConfirmation.equals("Y")) {
-					Book book = new Book(bName, bISBN, authorName);
-					//book.displayBook();//temp testcode
+			    }else {
+					System.out.println("Press a y/n to confirm/cancel: ");
+					String userConfirmation = sc.nextLine();
 
-					lib.addBook(book, bCopies);
-					System.out.println(bCopies + " book(s) of ISBN: " + bISBN + " added to the library!\n");
-				} else {
-					System.out.println("Cancelling... ");
+
+					if (userConfirmation.equals("y") || userConfirmation.equals("Y")) {
+						Book book = new Book(bName, bISBN, authorName, bCopies);
+						//book.displayBook();//temp testcode
+						DBHelper helper = new DBHelper();
+						helper.open();
+						helper.addBook(book);
+						helper.close();
+						System.out.println(bCopies + " book(s) of ISBN: " + bISBN + " added to the library!\n");
+					} else {
+						System.out.println("Cancelling... ");
+					}
 				}
 
 			} else if (choice == 3) {
-				System.out.println("\nTotal number of books in the library : " + lib.bookList.keySet().size());
-				//System.out.println("size = "+ lib.bookList.size()); //testcode ajay
-				System.out.println(lib.bookList.toString());    //code to view books from HashMap
+				DBHelper helper = new DBHelper();
+				int i = 1;
+				helper.open();
+				allBooks = helper.getAllBooks();
+				helper.close();
+				for(Book book : allBooks){
+					System.out.println(i+". "+book.getBookName()+" by "+book.getAuthorName()+" | ISBN: "+book.getISBN()+" | No. of available copies: "+book.getBookCopies());
+					i++;
+				}
 
 			} else if (choice == 4) {
 					isExit = true;
@@ -119,86 +131,65 @@ public class Launcher{
 			if (choice == 2) {
 				System.out.println("Press y/n to confirm ");
 				String yesorno = sc.nextLine();
-				sc.nextLine();
+
 
 				if (yesorno.equals("y") || yesorno.equals("Y")) {
-					System.out.println("\nTotal number of books in the library : " + lib.bookList.keySet().size());
-					System.out.println(lib.bookList.toString());
+					DBHelper helper = new DBHelper();
+					int i = 1;
+					helper.open();
+					allBooks = helper.getAllBooks();
+					helper.close();
+					for(Book book : allBooks){
+						System.out.println(i+". "+book.getBookName()+" by "+book.getAuthorName()+" | ISBN: "+book.getISBN()+" | No. of available copies: "+book.getBookCopies());
+						i++;
+					}//code to view books from db
 				} else {
 					System.out.println("Exiting...\n");
 				}
 
 
 			} else if (choice == 1) {
-				int flag = -1;
-				boolean canBorrow = true;
-				System.out.println("Enter the name of the book you want to borrow: ");
 
-				String borrowBookName = sc.nextLine();
-				sc.nextLine();
+				System.out.println("Enter the name of the book you want to borrow ");
+				String bName = sc.nextLine();
+				DBHelper helper = new DBHelper();
+				helper.open();
+				ArrayList<Book> lendList = helper.borrowBook(bName);
+				helper.close();
 
-				for (Book book : lib.bookList.keySet()) {
+				if(lendList.size() == 0){
+					System.out.println("Book not available!");
+				}else if(lendList.size() > 1) {
+					System.out.println("Enter your choice: ");
+					int select = sc.nextInt();
 
-					if (book.getBookName().equals(borrowBookName)) {
-						for (Book b : lib.lendList.keySet()) {
+					if (select <= lendList.size()) {
 
-							if (b.getISBN().equals(book.getISBN())) {
-								System.out.println("You can't borrow more than one book having the same ISBN!\n");
-								canBorrow = false;
-								break;
-							}
-
+						Book book = lendList.get(select - 1);
+						helper.open();
+						boolean isBorrowed = helper.addBorrowedBooks(book);
+						helper.close();
+						if (isBorrowed) {
+							System.out.println("Book borrowed successfully!");
+						} else {
+							System.out.println("Borrowing failed!");
 						}
 
-
+					} else {
+						System.out.println("Invalid choice!");
 					}
-
-
-					if (book.getBookName().equals(borrowBookName) && canBorrow) {
-						//System.out.println(lib.getNoOfCopiesAvailable(book)+" Copies available. Do you want to borrow?(y/n)\n");
-						//String yesorno = sc.nextLine();
-						//if(yesorno.equals("y") || yesorno.equals("Y")) {
-						//System.out.println("Testcode"+ lib.getNoOfCopiesAvailable(book));
-
-						lib.lendList.put(book, 1);
-						flag = 1;
-						break;
-						//	}
-
+				}else if(lendList.size() == 1){
+					Book book = lendList.get(0);
+					helper.open();
+					if(helper.addBorrowedBooks(book)){
+						System.out.println("Book borrowed successfully!");
 					}
+					helper.close();
 				}
-				if (flag != -1) {
 
-					lib.lendBooks(flag);
-					System.out.println(flag + " Book(s) borrowed from the Library! \n");
-
-
-				} else {
-
-					System.out.println("Incorrect Book Name \n");
-
-
-				}
 
 			} else if (choice == 3) {
 
-				System.out.println("Press y/n to confirm\n");
-				String yesoorno = sc.nextLine();
-
-				if (yesoorno.equals("y") || yesoorno.equals("Y")) {
-
-					System.out.println("No of books borrowed: " + lib.getNoOfBooksLended());
-					for (Book b : lib.lendList.keySet()) {
-
-						System.out.println("Book name: " + b.getBookName() + " by " + b.getAuthorName() + " of ISBN " + b.getISBN());
-
-					}
-
-				} else {
-
-					System.out.println("Exiting...");
-
-				}
 
 
 			} else if (choice == 4) {
