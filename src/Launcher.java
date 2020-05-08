@@ -87,7 +87,7 @@ public class Launcher {
                 System.out.println("Enter the number of copies:");
                 int bCopies = sc.nextInt();
                 sc.nextLine();
-                if (bCopies < 0) {
+                if (bCopies <= 0) {
                     System.out.println("Invalid choice entry. Please try again.\n");
 
                 } else {

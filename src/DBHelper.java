@@ -190,6 +190,10 @@ public class DBHelper {
                  if(choice <= removeList.size() && choice != 0){
                      System.out.println("Enter the number of copies ");
                      int copies = sc.nextInt();
+                     if(copies == 0){
+                         System.out.println("Number of copies can't be zero. ");
+                         return false;
+                     }
                      if(removeList.get(choice-1).getBookCopies() > copies){
                          queryString = "UPDATE library SET copies = "+(removeList.get(choice-1).getBookCopies()-copies)+" WHERE isbn_number = \""+removeList.get(choice-1).getISBN()+"\";";
                          statement.executeUpdate(queryString);
