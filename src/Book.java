@@ -23,7 +23,10 @@ public class Book {
     String getISBN() {
         return isbn;
     }
-    int getBookCopies(){return bookCopies;}
+
+    int getBookCopies() {
+        return bookCopies;
+    }
 
     public void setBookCopies(int bookCopies) {
         this.bookCopies = bookCopies;
