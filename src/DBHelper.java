@@ -86,7 +86,7 @@ public class DBHelper {
 
         try {
 
-            String queryString = "SELECT * FROM library;";
+            String queryString = "SELECT * FROM library ORDER BY book_name ASC;";
             ResultSet rs = statement.executeQuery(queryString);
             while (rs.next()) {
                 Book book = new Book(rs.getString("book_name"), rs.getString("isbn_number"), rs.getString("author_name"), rs.getInt("copies"));
