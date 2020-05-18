@@ -99,7 +99,7 @@ public class DBHelper {
         return bookLists;
     }
 
-    public boolean borrowedBooksList(User currentUser) {
+    public boolean borrowedBooksList(User currentUser) { // test commit
         boolean isListEmpty = true;
 
         try {
