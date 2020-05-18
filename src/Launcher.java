@@ -131,7 +131,11 @@ public class Launcher {
                 System.out.println("Enter the name of the book to be removed. ");
                 String bName = sc.nextLine();
                 helper.open();
-                helper.removeBooks(bName);
+                if(helper.removeBooks(bName)){
+                    System.out.println("Book(s) removed!\n");
+                }else{
+                    System.out.println("Operation failed!\n");
+                }
                 helper.close();
 
             }//Admin menu ends here

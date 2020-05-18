@@ -137,7 +137,7 @@ public class DBHelper {
 
             if (!isISBNsame) {
                 String queryString = "INSERT INTO library (isbn_number, book_name, author_name, copies) VALUES (\"" + book.getISBN() + "\",\"" + book.getBookName() + "\",\"" + book.getAuthorName() + "\"," + book.getBookCopies() + ");";
-                System.out.println(queryString);
+//                System.out.println(queryString);
                 statement.executeUpdate(queryString);
                 isBookAdded = true;
 
@@ -187,10 +187,11 @@ public class DBHelper {
                 System.out.println("Book name : " + removeList.get(0).getBookName() + "\n ISBN : " + removeList.get(0).getISBN() + "\n Copies : " + removeList.get(0).getBookCopies());
                 System.out.println("Enter the number of copies to be removed : ");
                 int cpy = sc.nextInt();
+                if(cpy < 0){ return false;}
                 if (removeList.get(0).getBookCopies() == cpy) {
                     queryString = "DELETE FROM library WHERE isbn_number = \"" + removeList.get(0).getISBN() + "\";";
                     statement.executeUpdate(queryString);
-                    System.out.println("Book Removed!");
+//                    System.out.println("Book Removed!");
                     return true;
 
                 } else if (removeList.get(0).getBookCopies() > cpy) {
@@ -201,7 +202,7 @@ public class DBHelper {
                     return true;
 
                 } else {
-                    System.out.println("Operation failed! ");
+//                    System.out.println("Operation failed! ");
                     return false;
                 }
             } else {
@@ -213,11 +214,12 @@ public class DBHelper {
                 }
                 System.out.println("Enter your choice");
                 int choice = sc.nextInt();
-                if (choice <= removeList.size() && choice != 0) {
-                    System.out.println("Enter the number of copies ");
+                if(choice <= 0){ return false;}
+                if (choice <= removeList.size()) {
+                    System.out.println("Enter the number of copies.");
                     int copies = sc.nextInt();
-                    if (copies == 0) {
-                        System.out.println("Number of copies can't be zero. ");
+                    if (copies <= 0) {
+                        System.out.println("Number of copies can't be zero or negative.\n");
                         return false;
                     }
                     if (removeList.get(choice - 1).getBookCopies() > copies) {
@@ -238,56 +240,7 @@ public class DBHelper {
         }
         return true;
     }
-   /* public boolean userTableCreator() {
-        Connection con = null;
 
-        DatabaseMetaData meta = con.getMetaData();
-        ResultSet res = meta.getTables(null, null, "users",
-                new String[]{"TABLE"});
-        if (!res.next()) {
-            System.out.println(
-                    "   "//+res.getString("TABLE_CAT")
-                         //   + ", "+res.getString("TABLE_SCHEM")
-                            + ", "+res.getString("users");
-                         //   + ", "+res.getString("TABLE_TYPE")
-                         //   + ", "+res.getString("REMARKS"));
-
-
-            try {
-                // create a database connection
-                connection = DriverManager.getConnection("jdbc:sqlite:db/library.db");
-                Statement statement = connection.createStatement();
-                statement.setQueryTimeout(30);  // set timeout to 30 sec.
-                statement.executeUpdate("CREATE TABLE users (username TEXT PRIMARY KEY, password TEXT NOT NULL, first_name TEXT NOT NULL, last_name TEXT NOT NULL, is_admin BIT NOT NULL)");
-                // statement.executeUpdate("INSERT INTO library (isbn_number, book_name, author_name, copies) VALUES (\"1222-1222-1111-0000\",\"Harry Potter\",\"JKR\",12)");
-                ResultSet rs = statement.executeQuery("SELECT * FROM users");
-                while (rs.next()) {
-                    System.out.println("Name : " + rs.getString("book_name"));
-                }
-
-
-            } catch (SQLException e) {
-                // if the error message is "out of memory",
-                // it probably means no database file is found
-                System.err.println("### " + e.getMessage());
-            } finally {
-                try {
-                    if (connection != null)
-                        connection.close();
-                } catch (SQLException e) {
-                    // connection close failed.
-
-                    System.err.println(e.getMessage());
-                }
-            }
-        }
-    } */
-
-//    public ArrayList<Book> getAllBooks(){
-//        ArrayList<Book> books = new ArrayList<>();
-//
-//        return  books;
-//    }
 
     public static void main(String[] args) { //test code
 
