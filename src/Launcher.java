@@ -100,12 +100,12 @@ public class Launcher {
                         //book.displayBook();//temp testcode
                         DBHelper helper = new DBHelper();
                         helper.open();
-                      boolean isBookAdded = helper.addBook(book);
+                        boolean isBookAdded = helper.addBook(book);
                         helper.close();
-                        if(isBookAdded) {
+                        if (isBookAdded) {
                             System.out.println(bCopies + " book(s) of ISBN: " + bISBN + " added to the library!\n");
                         }
-                        } else {
+                    } else {
                         System.out.println("Cancelling... ");
                     }
                 }
@@ -116,7 +116,7 @@ public class Launcher {
                 helper.open();
                 allBooks = helper.getAllBooks();
                 helper.close();
-                if(allBooks.isEmpty()){
+                if (allBooks.isEmpty()) {
                     System.out.println(" No Books Found! ");
                 }
                 for (Book book : allBooks) {
@@ -201,6 +201,13 @@ public class Launcher {
 
 
             } else if (choice == 3) {
+                DBHelper helper = new DBHelper();
+                helper.open();
+                boolean isListEmpty = helper.borrowedBooksList(currentUser);
+                helper.close();
+                if (!isListEmpty) {
+                    System.out.println("You have no borrowed books.\n");
+                }
 
 
             } else if (choice == 4) {
